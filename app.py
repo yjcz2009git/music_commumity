@@ -80,6 +80,11 @@ def load_musicians():
 # 顶部搜索栏
 def show_search_bar():
     col1, col2, col3 = st.columns([1, 3, 1])
+    with col1:
+        try:
+            st.image("images/logo.png", width=150)  # 调整logo宽度为150像素
+        except:
+            st.write("Logo加载失败")
     with col2:
         search_query = st.text_input("搜索音乐、音乐人或作品", key="search_query")
         if search_query:
@@ -120,7 +125,10 @@ def show_top_navigation():
 # 侧边栏 - 只用于显示logo和用户信息
 def show_sidebar():
     with st.sidebar:
-        st.image("images/logo.png", caption="音乐协作平台")
+        try:
+            st.image("images/logo.png", width=200, caption="在线音乐协作平台")  # 调整logo宽度为200像素
+        except:
+            st.write("Logo加载失败")
         
         if st.session_state.logged_in:
             st.write(f"用户类型: {st.session_state.user_type}")
@@ -159,116 +167,30 @@ def show_login_dialog():
 
 # 首页
 def show_home():
-    # 创建排行榜数据
-    ranking_data = {
-        "序号": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        "图片": [
-            "https://i.scdn.co/image/ab67616d0000b273c7ea27a595937b5a8f97f0c7",
-            "https://i.scdn.co/image/ab67616d0000b2733e4af28e99c47bdb2de3cdb7",
-            "https://i.scdn.co/image/ab67616d0000b273f2f2f432932fdf7cbfd7c996",
-            "https://i.scdn.co/image/ab67616d0000b273b171bfb01119d133b5e60688",
-            "https://i.scdn.co/image/ab67616d0000b273e472a5f5fb3eadc942043e8d",
-            "https://i.scdn.co/image/ab67616d0000b273a0c2ede59300cc98a4c72a2f",
-            "https://i.scdn.co/image/ab67616d0000b273c7ea27a595937b5a8f97f0c7",
-            "https://i.scdn.co/image/ab67616d0000b2733e4af28e99c47bdb2de3cdb7",
-            "https://i.scdn.co/image/ab67616d0000b273f2f2f432932fdf7cbfd7c996",
-            "https://i.scdn.co/image/ab67616d0000b273b171bfb01119d133b5e60688"
-        ],
-        "标题": [
-            "Die With A Smile",
-            "BIRDS OF A FEATHER",
-            "Ordinary",
-            "APT.",
-            "luther",
-            "That's So True",
-            "Blinding Lights",
-            "Bad Guy",
-            "Stay",
-            "As It Was"
-        ],
-        "播放量": [
-            "1,234,567",
-            "987,654",
-            "876,543",
-            "765,432",
-            "654,321",
-            "543,210",
-            "432,109",
-            "321,098",
-            "210,987",
-            "109,876"
-        ],
-        "专辑": [
-            "Born This Way",
-            "Happier Than Ever",
-            "Ordinary Life",
-            "R",
-            "GNX",
-            "The Secret of Us",
-            "After Hours",
-            "When We All Fall Asleep",
-            "F*CK LOVE 3",
-            "Harry's House"
-        ],
-        "时长": [
-            "3:45",
-            "3:20",
-            "4:10",
-            "3:15",
-            "2:57",
-            "2:46",
-            "3:20",
-            "3:14",
-            "2:21",
-            "2:47"
-        ]
-    }
-
-    # 创建DataFrame
-    df = pd.DataFrame(ranking_data)
-
-    # 设置表格样式
+    # 主题图片
     st.markdown("""
     <style>
-    .stDataFrame {
-        width: 1800px !important;
-        margin: 0 auto !important;
-    }
-    .stDataFrame table {
-        margin: 0 auto !important;
-    }
-    .stDataFrame thead th {
-        background-color: #1E88E5 !important;
-        color: white !important;
-        font-weight: bold !important;
-        text-align: center !important;
-        padding: 12px 15px !important;
-    }
-    .stDataFrame tbody td {
-        padding: 12px 15px !important;
-        border-bottom: 1px solid #eee !important;
-        vertical-align: middle !important;
-    }
-    .stDataFrame img {
-        width: 50px !important;
-        height: 50px !important;
-        border-radius: 4px !important;
-        object-fit: cover !important;
+    .theme-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin: 10px 0;
     }
     </style>
     """, unsafe_allow_html=True)
-
-    # 显示表格标题
-    st.header("世界音乐排行榜")
-
-    # 处理图片列显示
-    def path_to_image_html(path):
-        return f'<img src="{path}" style="width:50px;height:50px;border-radius:4px;">'
-
-    df['图片'] = df['图片'].apply(path_to_image_html)
-
-    # 使用Streamlit的dataframe显示功能
-    st.write(df.to_html(escape=False, index=False), unsafe_allow_html=True)
+    
+    try:
+        st.image("images/main.jpg", use_column_width=True, caption="主题图片")
+    except:
+        st.write("主题图片加载失败")
+    
+    # 显示排行榜标题和图片
+    st.header("全球前50名")
+    try:
+        st.image("images/rank.jpg", use_column_width=True, caption="全球排行榜")
+    except:
+        st.write("排行榜图片加载失败")
 
     # 优秀创作作品展示
     st.subheader("优秀创作作品展示")
@@ -429,7 +351,8 @@ def show_collaboration():
         # 视频会议界面 - 简化版本
         st.subheader("会议界面")
         st.write("这里是视频会议界面，在实际应用中应该集成视频会议功能")
-        st.image("music_community/images/meeting.jpg", caption="视频会议界面")
+        # 暂时注释掉图片显示，因为图片文件不存在
+        # st.image("music_community/images/meeting.jpg", caption="视频会议界面")
 
 # 作品角页面
 def show_works_corner():
@@ -453,7 +376,11 @@ def show_works_corner():
             col1, col2 = st.columns([1, 3])
             
             with col1:
-                st.image(f"images/work{work['id']}.jpg", caption=work["title"])
+                # 修改图片路径
+                try:
+                    st.image(f"images/work{work['id']}.jpg", caption=work["title"])
+                except:
+                    st.write("图片加载失败")
             
             with col2:
                 st.write(f"**{work['title']}**")
@@ -529,7 +456,11 @@ def show_community():
     cols = st.columns(5)
     for i, musician in enumerate(musicians):
         with cols[i]:
-            st.image(musician["avatar"], caption=musician["name"])
+            # 修改图片路径
+            try:
+                st.image(musician["avatar"], caption=musician["name"])
+            except:
+                st.write("头像加载失败")
             st.write(f"**{musician['name']}**")
             st.write(f"类型: {musician['type']}")
             if st.button("查看主页", key=f"view_musician_{musician['id']}"):
@@ -921,7 +852,11 @@ def show_account():
         col1, col2 = st.columns([1, 2])
         
         with col1:
-            st.image("images/avatar.jpg", caption="头像")
+            # 修改图片路径
+            try:
+                st.image("images/avatar.jpg", caption="头像")
+            except:
+                st.write("头像加载失败")
             st.file_uploader("更换头像", type=["jpg", "png"])
         
         with col2:
