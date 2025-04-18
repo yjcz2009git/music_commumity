@@ -7,27 +7,30 @@ import Image from 'next/image';
 const mockLiveStreams = [
   {
     id: 1,
-    title: '钢琴即兴创作',
-    streamer: '音乐人A',
+    title: '钢琴演奏会',
+    artist: '李云迪',
+    thumbnail: '/images/live1.jpg',
     viewers: 1234,
-    thumbnail: '/placeholder-1.jpg',
+    tags: ['古典', '钢琴'],
     isLive: true,
   },
   {
     id: 2,
     title: '吉他教学',
-    streamer: '音乐人B',
-    viewers: 567,
-    thumbnail: '/placeholder-2.jpg',
+    artist: '指弹吉他',
+    thumbnail: '/images/live2.jpg',
+    viewers: 2345,
+    tags: ['教学', '吉他'],
     isLive: true,
   },
   {
     id: 3,
-    title: '编曲技巧分享',
-    streamer: '音乐人C',
-    viewers: 890,
-    thumbnail: '/placeholder-3.jpg',
-    isLive: false,
+    title: '原创音乐分享',
+    artist: '独立音乐人',
+    thumbnail: '/images/live3.jpg',
+    viewers: 3456,
+    tags: ['原创', '民谣'],
+    isLive: true,
   },
 ];
 
@@ -49,7 +52,7 @@ export default function LivePage() {
           <div className="lg:col-span-2">
             {selectedStream ? (
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                <div className="relative aspect-w-16 aspect-h-9">
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center">
                       <div className="animate-pulse w-16 h-16 bg-red-600 rounded-full mx-auto mb-4"></div>
@@ -62,7 +65,7 @@ export default function LivePage() {
                     {mockLiveStreams.find(s => s.id === selectedStream)?.title}
                   </h2>
                   <p className="text-gray-600">
-                    {mockLiveStreams.find(s => s.id === selectedStream)?.streamer}
+                    {mockLiveStreams.find(s => s.id === selectedStream)?.artist}
                   </p>
                 </div>
               </div>
@@ -86,13 +89,13 @@ export default function LivePage() {
                 onClick={() => setSelectedStream(stream.id)}
               >
                 <div className="relative">
-                  <div className="aspect-w-16 aspect-h-9">
+                  <div className="relative aspect-w-16 aspect-h-9">
                     <Image
                       src={stream.thumbnail}
                       alt={stream.title}
-                      width={300}
-                      height={200}
+                      fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
                   {stream.isLive && (
@@ -106,7 +109,7 @@ export default function LivePage() {
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold">{stream.title}</h3>
-                  <p className="text-gray-600">{stream.streamer}</p>
+                  <p className="text-gray-600">{stream.artist}</p>
                 </div>
               </div>
             ))}

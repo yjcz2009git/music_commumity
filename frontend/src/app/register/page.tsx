@@ -2,182 +2,310 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-
-const roles = [
-  { id: 'composer', name: '作曲人', description: '创作音乐旋律和编曲' },
-  { id: 'lyricist', name: '作词人', description: '创作歌词' },
-  { id: 'record-company', name: '唱片公司', description: '音乐制作和发行' },
-  { id: 'investor', name: '投资方', description: '音乐项目投资' },
-  { id: 'video-producer', name: '影片制作', description: '音乐视频制作' },
-];
+import Image from 'next/image';
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: '',
-  });
-  const [error, setError] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('两次输入的密码不一致');
-      return;
-    }
-
-    if (!formData.role) {
-      setError('请选择您的角色');
-      return;
-    }
-
-    // 模拟注册
-    console.log('注册信息:', formData);
-    router.push('/login'); // 注册成功后跳转到登录页
-  };
+  const [step, setStep] = useState(1);
+  const [registerMethod, setRegisterMethod] = useState('phone'); // 'phone' or 'email'
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          创建新账号
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          已有账号？{' '}
-          <Link href="/login" className="font-medium text-purple-600 hover:text-purple-500">
-            立即登录
-          </Link>
-        </p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <Image
+            src="/images/logo.png"
+            alt="Logo"
+            width={64}
+            height={64}
+            className="mx-auto"
+          />
+          <h2 className="mt-6 text-3xl font-bold text-gray-900">注册音乐社区</h2>
+          <p className="mt-2 text-sm text-gray-600">
+            已有账号？
+            <Link href="/login" className="text-[rgb(var(--color-primary))] hover:underline">
+              立即登录
+            </Link>
+          </p>
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                {error}
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                用户名
-              </label>
-              <div className="mt-1">
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  required
-                  value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                邮箱地址
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                密码
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                确认密码
-              </label>
-              <div className="mt-1">
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">选择角色</label>
-              <div className="mt-2 grid grid-cols-1 gap-4">
-                {roles.map((role) => (
+        <div className="st-card">
+          {/* 步骤指示器 */}
+          <div className="flex justify-between mb-8">
+            <div className="flex-1">
+              <div className="relative">
+                <div className="w-full h-1 bg-gray-200 rounded">
                   <div
-                    key={role.id}
-                    className={`relative rounded-lg border p-4 cursor-pointer ${
-                      formData.role === role.id
-                        ? 'border-purple-600 bg-purple-50'
-                        : 'border-gray-300'
-                    }`}
-                    onClick={() => setFormData({ ...formData, role: role.id })}
-                  >
-                    <div className="flex items-center">
-                      <div className="flex-1">
-                        <h3 className="text-sm font-medium text-gray-900">{role.name}</h3>
-                        <p className="text-sm text-gray-500">{role.description}</p>
-                      </div>
-                      {formData.role === role.id && (
-                        <div className="text-purple-600">
-                          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                      )}
+                    className="h-1 bg-[rgb(var(--color-primary))] rounded"
+                    style={{ width: `${(step / 3) * 100}%` }}
+                  />
+                </div>
+                <div className="absolute -top-4 left-0 w-full flex justify-between">
+                  <div className="text-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      step >= 1 ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      1
                     </div>
+                    <div className="text-xs mt-1">验证身份</div>
                   </div>
-                ))}
+                  <div className="text-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      step >= 2 ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      2
+                    </div>
+                    <div className="text-xs mt-1">设置密码</div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      step >= 3 ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      3
+                    </div>
+                    <div className="text-xs mt-1">完善资料</div>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-              >
-                注册
-              </button>
+          {/* 步骤1：验证身份 */}
+          {step === 1 && (
+            <div className="space-y-6">
+              <div className="flex space-x-4 mb-6">
+                <button
+                  onClick={() => setRegisterMethod('phone')}
+                  className={`flex-1 py-2 text-center ${
+                    registerMethod === 'phone'
+                      ? 'text-[rgb(var(--color-primary))] border-b-2 border-[rgb(var(--color-primary))]'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  手机号注册
+                </button>
+                <button
+                  onClick={() => setRegisterMethod('email')}
+                  className={`flex-1 py-2 text-center ${
+                    registerMethod === 'email'
+                      ? 'text-[rgb(var(--color-primary))] border-b-2 border-[rgb(var(--color-primary))]'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  邮箱注册
+                </button>
+              </div>
+
+              {registerMethod === 'phone' ? (
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                    手机号
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      required
+                      className="st-input"
+                      placeholder="请输入手机号"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    邮箱
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      className="st-input"
+                      placeholder="请输入邮箱"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label htmlFor="code" className="block text-sm font-medium text-gray-700">
+                  验证码
+                </label>
+                <div className="mt-1 flex space-x-4">
+                  <input
+                    id="code"
+                    name="code"
+                    type="text"
+                    required
+                    className="st-input flex-1"
+                    placeholder="请输入验证码"
+                  />
+                  <button type="button" className="st-button whitespace-nowrap">
+                    获取验证码
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="st-button w-full"
+                >
+                  下一步
+                </button>
+              </div>
             </div>
-          </form>
+          )}
+
+          {/* 步骤2：设置密码 */}
+          {step === 2 && (
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  设置密码
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    className="st-input"
+                    placeholder="请输入密码"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+                  确认密码
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="confirm-password"
+                    name="confirm-password"
+                    type="password"
+                    required
+                    className="st-input"
+                    placeholder="请再次输入密码"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  id="agree"
+                  name="agree"
+                  type="checkbox"
+                  required
+                  className="h-4 w-4 text-[rgb(var(--color-primary))] focus:ring-[rgb(var(--color-primary))] border-gray-300 rounded"
+                />
+                <label htmlFor="agree" className="ml-2 block text-sm text-gray-900">
+                  我已阅读并同意
+                  <Link href="/terms" className="text-[rgb(var(--color-primary))] hover:underline">
+                    《用户协议》
+                  </Link>
+                  和
+                  <Link href="/privacy" className="text-[rgb(var(--color-primary))] hover:underline">
+                    《隐私政策》
+                  </Link>
+                </label>
+              </div>
+
+              <div className="flex space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="st-button bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                >
+                  上一步
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStep(3)}
+                  className="st-button flex-1"
+                >
+                  下一步
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 步骤3：完善资料 */}
+          {step === 3 && (
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="nickname" className="block text-sm font-medium text-gray-700">
+                  昵称
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="nickname"
+                    name="nickname"
+                    type="text"
+                    required
+                    className="st-input"
+                    placeholder="请输入昵称"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+                  角色
+                </label>
+                <div className="mt-1">
+                  <select
+                    id="role"
+                    name="role"
+                    required
+                    className="st-input"
+                  >
+                    <option value="">请选择角色</option>
+                    <option value="composer">作曲人</option>
+                    <option value="lyricist">作词人</option>
+                    <option value="singer">歌手</option>
+                    <option value="producer">制作人</option>
+                    <option value="musician">音乐人</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
+                  个人简介
+                </label>
+                <div className="mt-1">
+                  <textarea
+                    id="bio"
+                    name="bio"
+                    rows={3}
+                    className="st-input"
+                    placeholder="请输入个人简介"
+                  />
+                </div>
+              </div>
+
+              <div className="flex space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="st-button bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                >
+                  上一步
+                </button>
+                <button
+                  type="submit"
+                  className="st-button flex-1"
+                >
+                  完成注册
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
