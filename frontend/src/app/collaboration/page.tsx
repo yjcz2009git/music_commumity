@@ -2,153 +2,136 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 // 模拟协作项目数据
 const mockProjects = [
   {
     id: 1,
-    title: '《夜曲》编曲合作',
-    description: '寻找编曲师合作完成《夜曲》的编曲工作，风格偏向流行。',
+    title: '流行音乐编曲合作',
+    description: '寻找优秀的编曲师合作完成新歌编曲',
     owner: {
       name: '张三',
-      avatar: '/images/avatar1.jpg',
-      role: '作曲人',
+      avatar: '/images/avatar1.jpg'
     },
-    status: '进行中',
-    members: 3,
-    created_at: '2024-03-15',
-    deadline: '2024-04-15',
-    tags: ['编曲', '流行', '合作'],
+    status: '招募中',
+    collaborators: 3,
+    deadline: '2024-05-15',
+    tags: ['编曲', '流行', '合作']
   },
   {
     id: 2,
-    title: '《海阔天空》翻唱',
-    description: '寻找歌手合作翻唱《海阔天空》，需要重新编曲。',
+    title: '民谣吉他伴奏',
+    description: '需要吉他手为原创民谣歌曲录制伴奏',
     owner: {
       name: '李四',
-      avatar: '/images/avatar2.jpg',
-      role: '制作人',
+      avatar: '/images/avatar2.jpg'
     },
-    status: '招募中',
-    members: 1,
-    created_at: '2024-03-14',
+    status: '进行中',
+    collaborators: 2,
     deadline: '2024-04-30',
-    tags: ['翻唱', '编曲', '歌手'],
+    tags: ['吉他', '民谣', '伴奏']
   },
   {
     id: 3,
-    title: '《青花瓷》混音',
-    description: '需要混音师对《青花瓷》进行混音处理，风格偏向中国风。',
+    title: '电子音乐制作',
+    description: '寻找制作人合作完成电子音乐作品',
     owner: {
       name: '王五',
-      avatar: '/images/avatar3.jpg',
-      role: '歌手',
+      avatar: '/images/avatar3.jpg'
     },
     status: '已完成',
-    members: 2,
-    created_at: '2024-03-10',
-    deadline: '2024-03-25',
-    tags: ['混音', '中国风'],
-  },
+    collaborators: 4,
+    deadline: '2024-04-01',
+    tags: ['电子', '制作', '混音']
+  }
 ];
 
 export default function CollaborationPage() {
-  const [filter, setFilter] = useState('全部');
-  const [sortBy, setSortBy] = useState('最新');
-
-  const filters = ['全部', '招募中', '进行中', '已完成'];
+  const [filter, setFilter] = useState('all');
+  const [sort, setSort] = useState('newest');
 
   return (
-    <div className="st-container">
+    <div className="st-container py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">协作空间</h1>
-        <div className="flex space-x-4">
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="st-input"
-          >
-            <option value="最新">最新创建</option>
-            <option value="截止日期">截止日期</option>
-            <option value="成员数">成员数</option>
-          </select>
-        </div>
+        <h1 className="text-3xl font-bold">协作项目</h1>
+        <Link href="/collaboration/new" className="st-button">
+          发起协作
+        </Link>
       </div>
 
-      {/* 筛选按钮 */}
-      <div className="flex space-x-2 mb-8 overflow-x-auto pb-2">
-        {filters.map((f) => (
+      {/* 筛选和排序 */}
+      <div className="flex flex-wrap gap-4 mb-8">
+        <div className="flex gap-2">
           <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-full whitespace-nowrap ${
-              filter === f
-                ? 'bg-[rgb(var(--color-primary))] text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
+            className={`px-4 py-2 rounded-md ${
+              filter === 'all' ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-100'
             }`}
+            onClick={() => setFilter('all')}
           >
-            {f}
+            全部
           </button>
-        ))}
-      </div>
-
-      {/* 创建项目按钮 */}
-      <div className="mb-8">
-        <button className="st-button w-full">创建新项目</button>
+          <button
+            className={`px-4 py-2 rounded-md ${
+              filter === 'recruiting' ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-100'
+            }`}
+            onClick={() => setFilter('recruiting')}
+          >
+            招募中
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md ${
+              filter === 'in-progress' ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-100'
+            }`}
+            onClick={() => setFilter('in-progress')}
+          >
+            进行中
+          </button>
+        </div>
+        <select
+          className="px-4 py-2 rounded-md bg-gray-100"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="newest">最新发布</option>
+          <option value="deadline">截止日期</option>
+          <option value="collaborators">协作人数</option>
+        </select>
       </div>
 
       {/* 项目列表 */}
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mockProjects.map((project) => (
-          <div key={project.id} className="st-card">
-            <div className="flex items-start space-x-4">
-              <div className="relative w-12 h-12">
+          <div key={project.id} className="st-card hover:shadow-lg transition-shadow">
+            <div className="flex items-center mb-4">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden mr-3">
                 <Image
                   src={project.owner.avatar}
                   alt={project.owner.name}
                   fill
-                  className="rounded-full object-cover"
+                  className="object-cover"
                 />
               </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="font-semibold text-lg">{project.title}</h3>
-                    <div className="flex items-center space-x-2 text-sm text-gray-500">
-                      <span>{project.owner.name}</span>
-                      <span>•</span>
-                      <span>{project.owner.role}</span>
-                      <span>•</span>
-                      <span>{project.created_at}</span>
-                    </div>
-                  </div>
-                  <span className={`px-3 py-1 rounded-full text-sm ${
-                    project.status === '招募中' ? 'bg-yellow-100 text-yellow-800' :
-                    project.status === '进行中' ? 'bg-blue-100 text-blue-800' :
-                    'bg-green-100 text-green-800'
-                  }`}>
-                    {project.status}
-                  </span>
-                </div>
-                <p className="text-gray-600 mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center space-x-4">
-                    <span>👥 {project.members} 位成员</span>
-                    <span>⏰ 截止日期: {project.deadline}</span>
-                  </div>
-                  <button className="st-button">查看详情</button>
-                </div>
+              <div>
+                <div className="font-medium">{project.owner.name}</div>
+                <div className="text-sm text-gray-500">{project.status}</div>
               </div>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+            <p className="text-gray-600 mb-4">{project.description}</p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {project.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className="flex justify-between text-sm text-gray-500">
+              <span>协作人数: {project.collaborators}</span>
+              <span>截止日期: {project.deadline}</span>
             </div>
           </div>
         ))}

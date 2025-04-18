@@ -3,254 +3,256 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
+type VerificationType = '个人认证' | '机构认证' | '企业认证';
+type VerificationStep = 1 | 2 | 3;
+
 export default function VerificationPage() {
-  const [verificationType, setVerificationType] = useState('个人认证');
-  const [step, setStep] = useState(1);
+  const [verificationType, setVerificationType] = useState<VerificationType>('个人认证');
+  const [currentStep, setCurrentStep] = useState<VerificationStep>(1);
 
-  const types = ['个人认证', '机构认证', '企业认证'];
+  const verificationTypes: VerificationType[] = ['个人认证', '机构认证', '企业认证'];
 
-  return (
-    <div className="st-container">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold mb-8">账号认证</h1>
-
-        {/* 认证类型选择 */}
-        <div className="st-card mb-8">
-          <h2 className="text-lg font-semibold mb-4">选择认证类型</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {types.map((type) => (
-              <button
-                key={type}
-                onClick={() => {
-                  setVerificationType(type);
-                  setStep(1);
-                }}
-                className={`p-4 rounded-lg border-2 text-center ${
-                  verificationType === type
-                    ? 'border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))] bg-opacity-10'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="text-xl mb-2">
-                  {type === '个人认证' ? '👤' : type === '机构认证' ? '🏛️' : '🏢'}
-                </div>
-                <div className="font-medium">{type}</div>
-                <div className="text-sm text-gray-500 mt-1">
-                  {type === '个人认证'
-                    ? '适用于音乐创作者、歌手等'
-                    : type === '机构认证'
-                    ? '适用于音乐工作室、教育机构等'
-                    : '适用于音乐公司、唱片公司等'}
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 认证步骤 */}
-        <div className="st-card">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-lg font-semibold">{verificationType}申请</h2>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-primary))] text-white flex items-center justify-center">
-                1
-              </div>
-              <div className="w-12 h-1 bg-gray-200">
-                <div
-                  className="h-full bg-[rgb(var(--color-primary))]"
-                  style={{ width: step >= 2 ? '100%' : '0%' }}
-                ></div>
-              </div>
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  step >= 2
-                    ? 'bg-[rgb(var(--color-primary))] text-white'
-                    : 'bg-gray-200 text-gray-500'
-                }`}
-              >
-                2
-              </div>
-              <div className="w-12 h-1 bg-gray-200">
-                <div
-                  className="h-full bg-[rgb(var(--color-primary))]"
-                  style={{ width: step >= 3 ? '100%' : '0%' }}
-                ></div>
-              </div>
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  step >= 3
-                    ? 'bg-[rgb(var(--color-primary))] text-white'
-                    : 'bg-gray-200 text-gray-500'
-                }`}
-              >
-                3
-              </div>
-            </div>
-          </div>
-
-          {/* 步骤1：基本信息 */}
-          {step === 1 && (
-            <div className="space-y-6">
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold">基本信息</h3>
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {verificationType === '个人认证' ? '姓名' : '机构名称'}
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {verificationType === '个人认证' ? '姓名' : '机构/企业名称'}
                 </label>
                 <input
                   type="text"
-                  className="st-input"
-                  placeholder={
-                    verificationType === '个人认证'
-                      ? '请输入真实姓名'
-                      : '请输入机构名称'
-                  }
+                  className="st-input w-full"
+                  placeholder={verificationType === '个人认证' ? '请输入真实姓名' : '请输入机构/企业全称'}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   {verificationType === '个人认证' ? '身份证号' : '营业执照号'}
                 </label>
                 <input
                   type="text"
-                  className="st-input"
-                  placeholder={
-                    verificationType === '个人认证'
-                      ? '请输入身份证号'
-                      : '请输入营业执照号'
-                  }
+                  className="st-input w-full"
+                  placeholder={verificationType === '个人认证' ? '请输入18位身份证号' : '请输入营业执照号'}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  联系电话
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  手机号码
                 </label>
                 <input
                   type="tel"
-                  className="st-input"
-                  placeholder="请输入联系电话"
+                  className="st-input w-full"
+                  placeholder="请输入手机号码"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   电子邮箱
                 </label>
                 <input
                   type="email"
-                  className="st-input"
+                  className="st-input w-full"
                   placeholder="请输入电子邮箱"
                 />
               </div>
-              <button
-                className="st-button w-full"
-                onClick={() => setStep(2)}
-              >
-                下一步
-              </button>
             </div>
-          )}
-
-          {/* 步骤2：上传证件 */}
-          {step === 2 && (
-            <div className="space-y-6">
+          </div>
+        );
+      case 2:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold">证件上传</h3>
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {verificationType === '个人认证'
-                    ? '上传身份证照片'
-                    : '上传营业执照'}
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {verificationType === '个人认证' ? '身份证正面照片' : '营业执照照片'}
                 </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  <div className="text-gray-500">
-                    <div className="text-4xl mb-2">📄</div>
-                    <p>点击或拖拽文件到此处上传</p>
-                    <p className="text-sm mt-1">
-                      支持 JPG、PNG 格式，大小不超过 5MB
-                    </p>
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                  <div className="space-y-1 text-center">
+                    <svg
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <div className="flex text-sm text-gray-600">
+                      <label className="relative cursor-pointer bg-white rounded-md font-medium text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-dark))] focus-within:outline-none">
+                        <span>点击上传文件</span>
+                        <input type="file" className="sr-only" accept="image/*" />
+                      </label>
+                      <p className="pl-1">或拖拽文件到此处</p>
+                    </div>
+                    <p className="text-xs text-gray-500">PNG, JPG, GIF 格式，最大 10MB</p>
                   </div>
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {verificationType === '个人认证'
-                    ? '上传手持身份证照片'
-                    : '上传法人身份证'}
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  <div className="text-gray-500">
-                    <div className="text-4xl mb-2">📸</div>
-                    <p>点击或拖拽文件到此处上传</p>
-                    <p className="text-sm mt-1">
-                      支持 JPG、PNG 格式，大小不超过 5MB
-                    </p>
+              {verificationType === '个人认证' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    身份证反面照片
+                  </label>
+                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                    <div className="space-y-1 text-center">
+                      <svg
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <div className="flex text-sm text-gray-600">
+                        <label className="relative cursor-pointer bg-white rounded-md font-medium text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-dark))] focus-within:outline-none">
+                          <span>点击上传文件</span>
+                          <input type="file" className="sr-only" accept="image/*" />
+                        </label>
+                        <p className="pl-1">或拖拽文件到此处</p>
+                      </div>
+                      <p className="text-xs text-gray-500">PNG, JPG, GIF 格式，最大 10MB</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex space-x-4">
-                <button
-                  className="st-button flex-1"
-                  onClick={() => setStep(1)}
-                >
-                  上一步
-                </button>
-                <button
-                  className="st-button flex-1"
-                  onClick={() => setStep(3)}
-                >
-                  下一步
-                </button>
-              </div>
+              )}
             </div>
-          )}
-
-          {/* 步骤3：补充信息 */}
-          {step === 3 && (
-            <div className="space-y-6">
+          </div>
+        );
+      case 3:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold">补充信息</h3>
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {verificationType === '个人认证' ? '个人简介' : '机构简介'}
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {verificationType === '个人认证' ? '个人简介' : '机构/企业简介'}
                 </label>
                 <textarea
-                  className="st-input"
-                  rows={4}
-                  placeholder={
-                    verificationType === '个人认证'
-                      ? '请简要介绍您的音乐经历和成就'
-                      : '请简要介绍机构的主要业务和成就'
-                  }
+                  className="st-input w-full h-32"
+                  placeholder="请简要介绍自己/机构"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   社交媒体账号
                 </label>
                 <input
                   type="text"
-                  className="st-input"
-                  placeholder="请输入您的社交媒体账号（选填）"
+                  className="st-input w-full"
+                  placeholder="微博/抖音/小红书等账号链接"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   作品链接
                 </label>
                 <input
                   type="text"
-                  className="st-input"
-                  placeholder="请输入您的代表作品链接（选填）"
+                  className="st-input w-full"
+                  placeholder="音乐作品/演出视频等链接"
                 />
               </div>
-              <div className="flex space-x-4">
-                <button
-                  className="st-button flex-1"
-                  onClick={() => setStep(2)}
-                >
-                  上一步
-                </button>
-                <button className="st-button flex-1">
-                  提交认证
-                </button>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-8">账号认证</h1>
+      
+      {/* 认证类型选择 */}
+      <div className="flex gap-4 mb-8">
+        {verificationTypes.map((type) => (
+          <button
+            key={type}
+            className={`px-6 py-3 rounded-lg ${
+              verificationType === type
+                ? 'bg-[rgb(var(--color-primary))] text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+            onClick={() => setVerificationType(type)}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+
+      {/* 步骤指示器 */}
+      <div className="mb-8">
+        <div className="flex items-center">
+          {[1, 2, 3].map((step) => (
+            <div key={step} className="flex-1 relative">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  step <= currentStep
+                    ? 'bg-[rgb(var(--color-primary))] text-white'
+                    : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {step}
+              </div>
+              {step < 3 && (
+                <div
+                  className={`absolute top-4 left-8 w-[calc(100%-2rem)] h-0.5 ${
+                    step < currentStep ? 'bg-[rgb(var(--color-primary))]' : 'bg-gray-200'
+                  }`}
+                />
+              )}
+              <div className={`absolute -bottom-6 left-0 w-full text-center text-sm ${
+                step <= currentStep ? 'text-[rgb(var(--color-primary))]' : 'text-gray-500'
+              }`}>
+                {step === 1 ? '基本信息' : step === 2 ? '证件上传' : '补充信息'}
               </div>
             </div>
-          )}
+          ))}
         </div>
+      </div>
+
+      {/* 步骤内容 */}
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+        {renderStepContent()}
+      </div>
+
+      {/* 操作按钮 */}
+      <div className="flex justify-between">
+        <button
+          className="st-button-secondary"
+          onClick={() => setCurrentStep((prev) => prev > 1 ? (prev - 1) as VerificationStep : prev)}
+          disabled={currentStep === 1}
+        >
+          上一步
+        </button>
+        <button
+          className="st-button"
+          onClick={() => {
+            if (currentStep < 3) {
+              setCurrentStep((prev) => (prev + 1) as VerificationStep);
+            } else {
+              // 提交认证
+              console.log('提交认证');
+            }
+          }}
+        >
+          {currentStep === 3 ? '提交认证' : '下一步'}
+        </button>
       </div>
     </div>
   );

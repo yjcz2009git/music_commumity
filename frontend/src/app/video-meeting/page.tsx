@@ -2,153 +2,157 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 // 模拟会议数据
 const mockMeetings = [
   {
     id: 1,
-    title: '《夜曲》编曲讨论',
-    description: '讨论《夜曲》的编曲方向和风格定位。',
+    title: '音乐制作研讨会',
+    description: '讨论最新的音乐制作技术和趋势',
     host: {
       name: '张三',
       avatar: '/images/avatar1.jpg',
-      role: '作曲人',
+      role: '音乐制作人'
     },
-    status: '即将开始',
-    participants: 5,
-    startTime: '2024-03-20 14:00',
-    duration: '60分钟',
-    tags: ['编曲', '讨论'],
+    date: '2024-03-25',
+    time: '14:00',
+    duration: '120分钟',
+    participants: 12,
+    status: 'upcoming'
   },
   {
     id: 2,
-    title: '《海阔天空》翻唱排练',
-    description: '排练《海阔天空》翻唱版本，调整演唱技巧。',
+    title: '歌曲创作交流会',
+    description: '分享歌曲创作经验和技巧',
     host: {
       name: '李四',
       avatar: '/images/avatar2.jpg',
-      role: '歌手',
+      role: '作曲家'
     },
-    status: '进行中',
-    participants: 3,
-    startTime: '2024-03-20 10:00',
+    date: '2024-03-24',
+    time: '10:00',
     duration: '90分钟',
-    tags: ['翻唱', '排练'],
+    participants: 8,
+    status: 'ongoing'
   },
   {
     id: 3,
-    title: '《青花瓷》混音反馈',
-    description: '讨论《青花瓷》混音效果，收集反馈意见。',
+    title: '音乐版权研讨会',
+    description: '探讨音乐版权保护和授权问题',
     host: {
       name: '王五',
       avatar: '/images/avatar3.jpg',
-      role: '制作人',
+      role: '版权顾问'
     },
-    status: '已结束',
-    participants: 4,
-    startTime: '2024-03-19 15:00',
-    duration: '45分钟',
-    tags: ['混音', '反馈'],
-  },
+    date: '2024-03-20',
+    time: '15:30',
+    duration: '60分钟',
+    participants: 15,
+    status: 'completed'
+  }
 ];
 
 export default function VideoMeetingPage() {
-  const [filter, setFilter] = useState('全部');
-  const [sortBy, setSortBy] = useState('最新');
+  const [filter, setFilter] = useState('all');
 
-  const filters = ['全部', '即将开始', '进行中', '已结束'];
+  // 过滤会议
+  const filteredMeetings = mockMeetings.filter(meeting => {
+    if (filter === 'all') return true;
+    return meeting.status === filter;
+  });
 
   return (
-    <div className="st-container">
+    <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">视频会议</h1>
-        <div className="flex space-x-4">
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="st-input"
-          >
-            <option value="最新">最新创建</option>
-            <option value="开始时间">开始时间</option>
-            <option value="参与人数">参与人数</option>
-          </select>
-        </div>
+        <h1 className="text-3xl font-bold">视频会议</h1>
+        <button className="st-button">
+          创建会议
+        </button>
       </div>
 
-      {/* 筛选按钮 */}
-      <div className="flex space-x-2 mb-8 overflow-x-auto pb-2">
-        {filters.map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-full whitespace-nowrap ${
-              filter === f
-                ? 'bg-[rgb(var(--color-primary))] text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            {f}
-          </button>
-        ))}
+      <div className="flex gap-4 mb-6">
+        <button
+          className={`px-4 py-2 rounded-md ${
+            filter === 'all' ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-100'
+          }`}
+          onClick={() => setFilter('all')}
+        >
+          全部会议
+        </button>
+        <button
+          className={`px-4 py-2 rounded-md ${
+            filter === 'upcoming' ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-100'
+          }`}
+          onClick={() => setFilter('upcoming')}
+        >
+          即将开始
+        </button>
+        <button
+          className={`px-4 py-2 rounded-md ${
+            filter === 'ongoing' ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-100'
+          }`}
+          onClick={() => setFilter('ongoing')}
+        >
+          进行中
+        </button>
+        <button
+          className={`px-4 py-2 rounded-md ${
+            filter === 'completed' ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-100'
+          }`}
+          onClick={() => setFilter('completed')}
+        >
+          已结束
+        </button>
       </div>
 
-      {/* 创建会议按钮 */}
-      <div className="mb-8">
-        <button className="st-button w-full">创建新会议</button>
-      </div>
-
-      {/* 会议列表 */}
-      <div className="space-y-6">
-        {mockMeetings.map((meeting) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredMeetings.map((meeting) => (
           <div key={meeting.id} className="st-card">
-            <div className="flex items-start space-x-4">
-              <div className="relative w-12 h-12">
+            <div className="flex items-start gap-4">
+              <div className="relative w-12 h-12 rounded-full overflow-hidden">
                 <Image
                   src={meeting.host.avatar}
                   alt={meeting.host.name}
                   fill
-                  className="rounded-full object-cover"
+                  className="object-cover"
                 />
               </div>
               <div className="flex-1">
-                <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center justify-between mb-2">
                   <div>
-                    <h3 className="font-semibold text-lg">{meeting.title}</h3>
-                    <div className="flex items-center space-x-2 text-sm text-gray-500">
-                      <span>主持人: {meeting.host.name}</span>
-                      <span>•</span>
-                      <span>{meeting.host.role}</span>
-                    </div>
+                    <span className="font-medium">{meeting.host.name}</span>
+                    <span className="text-sm text-gray-500 ml-2">{meeting.host.role}</span>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm ${
-                    meeting.status === '即将开始' ? 'bg-yellow-100 text-yellow-800' :
-                    meeting.status === '进行中' ? 'bg-green-100 text-green-800' :
-                    'bg-gray-100 text-gray-800'
+                  <span className={`text-sm px-2 py-1 rounded ${
+                    meeting.status === 'upcoming' ? 'bg-yellow-100 text-yellow-600' :
+                    meeting.status === 'ongoing' ? 'bg-green-100 text-green-600' :
+                    'bg-gray-100 text-gray-600'
                   }`}>
-                    {meeting.status}
+                    {meeting.status === 'upcoming' ? '即将开始' :
+                     meeting.status === 'ongoing' ? '进行中' : '已结束'}
                   </span>
                 </div>
+                <h3 className="text-xl font-semibold mb-2">{meeting.title}</h3>
                 <p className="text-gray-600 mb-4">{meeting.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {meeting.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center space-x-4">
-                    <span>👥 {meeting.participants} 位参与者</span>
-                    <span>⏰ {meeting.startTime}</span>
-                    <span>⏱️ {meeting.duration}</span>
+                <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-gray-500">
+                  <div>
+                    <div>📅 日期：{meeting.date}</div>
+                    <div>⏰ 时间：{meeting.time}</div>
                   </div>
-                  <button className="st-button">
-                    {meeting.status === '已结束' ? '查看记录' : '加入会议'}
-                  </button>
+                  <div>
+                    <div>⌛ 时长：{meeting.duration}</div>
+                    <div>👥 参与人数：{meeting.participants}</div>
+                  </div>
                 </div>
+                {meeting.status !== 'completed' && (
+                  <Link
+                    href={`/video-meeting/${meeting.id}`}
+                    className="st-button w-full text-center block"
+                  >
+                    {meeting.status === 'upcoming' ? '预约参加' : '加入会议'}
+                  </Link>
+                )}
               </div>
             </div>
           </div>
